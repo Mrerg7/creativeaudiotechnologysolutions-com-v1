@@ -3,11 +3,6 @@ compatibility_date = "2026-08-01"
 
 # Pure static assets on Cloudflare Workers Static Assets
 # No main / Worker entry — assets only
+# Do NOT use a binding for assets-only Workers
 [assets]
 directory = "./dist"
-binding = "ASSETS"
-
-# Optional: custom routes / not_found if needed later
-# [[routes]]
-# pattern = "/*"
-# zone_name = "creativeaudiotechnologysolutions.com"
