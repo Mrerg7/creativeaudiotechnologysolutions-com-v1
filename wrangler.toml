@@ -1,0 +1,13 @@
+name = "creativeaudiotechnologysolutions-com-v1"
+compatibility_date = "2026-08-01"
+
+# Pure static assets on Cloudflare Workers Static Assets
+# No main / Worker entry — assets only
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# Optional: custom routes / not_found if needed later
+# [[routes]]
+# pattern = "/*"
+# zone_name = "creativeaudiotechnologysolutions.com"
