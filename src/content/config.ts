@@ -1,15 +1,2 @@
-import { defineCollection, z } from 'astro:content';
-
-const insights = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-  }),
-});
-
-export const collections = { insights };
+// Content Collections disabled - not used on this static site
+export const collections = {};
