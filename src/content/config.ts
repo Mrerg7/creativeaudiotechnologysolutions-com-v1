@@ -1,6 +1,5 @@
 import { defineCollection, z } from 'astro:content';
 
-// Content Collections scaffold — ready for future insights / case studies
 const insights = defineCollection({
   type: 'content',
   schema: z.object({
