@@ -4,11 +4,18 @@
 
 @layer base {
   html {
-    @apply scroll-smooth antialiased;
+    @apply scroll-smooth antialiased overflow-x-hidden;
     color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
-    @apply bg-surface-900 text-slate-100 font-sans;
+    @apply bg-surface-900 text-slate-100 font-sans overflow-x-hidden;
+  }
+  img,
+  video,
+  svg {
+    @apply max-w-full h-auto;
   }
   ::selection {
     @apply bg-neon-cyan/30 text-white;
@@ -35,10 +42,10 @@
     @apply rounded-2xl border border-white/5 bg-surface-800/60 backdrop-blur-sm;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-neon-cyan px-6 py-3.5 text-base font-semibold text-surface-900 shadow-lg shadow-neon-cyan/20 transition-all hover:bg-cyan-300 hover:shadow-neon-cyan/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan;
+    @apply inline-flex items-center justify-center gap-2 min-h-12 rounded-xl bg-neon-cyan px-6 py-3.5 text-base font-semibold text-surface-900 shadow-lg shadow-neon-cyan/20 transition-all hover:bg-cyan-300 hover:shadow-neon-cyan/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+    @apply inline-flex items-center justify-center gap-2 min-h-12 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
   }
   .gradient-text {
     @apply bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent;

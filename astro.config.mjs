@@ -11,9 +11,9 @@ export default defineConfig({
       applyBaseStyles: false, // we control base in global.css
     }),
     sitemap({
-      filter: (page) => !page.includes('/404'),
+      filter: (page) => !page.includes('/404') && !page.includes('/404.html'),
       changefreq: 'weekly',
-      priority: 0.8,
+      priority: 1.0,
     }),
   ],
   output: 'static',

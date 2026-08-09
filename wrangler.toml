@@ -1,8 +1,24 @@
+# Workers Static Assets + thin Worker for canonical host redirects
+# (www → apex, http → https, *.workers.dev → apex)
 name = "creativeaudiotechnologysolutions-com-v1"
+main = "src/worker.ts"
 compatibility_date = "2026-08-01"
+workers_dev = true
 
-# Pure static assets on Cloudflare Workers Static Assets
-# No main / Worker entry — assets only
-# Do NOT use a binding for assets-only Workers
+[[routes]]
+pattern = "creativeaudiotechnologysolutions.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.creativeaudiotechnologysolutions.com"
+custom_domain = true
+
 [assets]
 directory = "./dist"
+binding = "ASSETS"
+# Required so Host-based redirects run before static HTML is served for /
+run_worker_first = true
+# Prefer trailing-slash URLs to match the canonical homepage
+html_handling = "force-trailing-slash"
+# Serve dist/404.html with a real 404 status for unknown paths
+not_found_handling = "404-page"
