@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { insights } from '../../data/insights';
+import { breadcrumbLd } from '../../data/seo';
+import { site } from '../../data/site';
+
+const title = `AI Audio Insights | ${site.name}`;
+const description =
+  'Primers on AI audio technology, generative production, and AI-assisted mixing — written around the category for creativeaudiotechnologysolutions.com.';
+const canonical = `${site.url}/insights/`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  canonical={canonical}
+  modified={site.updated}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', url: `${site.url}/` },
+      { name: 'Insights', url: canonical },
+    ]),
+  ]}
+>
+  <Header />
+  <main id="main">
+    <section class="border-b border-white/5 pt-28 pb-12 sm:pt-32 sm:pb-16">
+      <div class="container-narrow max-w-3xl">
+        <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Insights' }]} />
+        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-neon-cyan">Category reading</p>
+        <h1 class="mt-3 heading-section">Insights</h1>
+        <p class="mt-5 text-lg leading-relaxed text-slate-300">
+          Short, indexable explainers for the AI audio category. Educational context for the domain — not a product pitch.
+        </p>
+      </div>
+    </section>
+
+    <section class="container-narrow max-w-3xl py-12 sm:py-16">
+      <ul class="space-y-5">
+        {
+          insights.map((item) => (
+            <li>
+              <a
+                href={`/insights/${item.slug}/`}
+                class="block rounded-2xl border border-white/10 bg-surface-800/40 p-6 transition hover:border-neon-cyan/40"
+              >
+                <p class="text-xs uppercase tracking-wider text-slate-500">
+                  <time datetime={item.published}>{item.published}</time>
+                  · {item.readingMinutes} min
+                </p>
+                <h2 class="mt-2 text-xl font-semibold text-white">{item.title}</h2>
+                <p class="mt-3 text-slate-400 leading-relaxed">{item.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+  <Footer />
+</Layout>

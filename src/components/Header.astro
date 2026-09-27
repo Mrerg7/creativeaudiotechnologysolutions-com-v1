@@ -1,26 +1,104 @@
 ---
+import { nav } from '../data/site';
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string) {
+  const normalized = href.replace(/\/$/, '') || '/';
+  if (normalized === '/insights') {
+    return current === '/insights' || current.startsWith('/insights/');
+  }
+  return current === normalized;
+}
+
+const inquireHref = current === '/' ? '#inquire' : '/acquire/#inquire';
 ---
+
 <header class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-surface-900/80 backdrop-blur-xl">
   <div class="container-narrow flex h-16 items-center justify-between gap-3">
-    <a href="/" class="flex min-h-11 items-center gap-2.5 group shrink-0">
-      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neon-cyan/10 ring-1 ring-neon-cyan/30 group-hover:bg-neon-cyan/20 transition">
-        <svg class="h-4 w-4 text-neon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <a href="/" class="flex min-h-11 min-w-0 items-center gap-2.5 group">
+      <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-neon-cyan/10 ring-1 ring-neon-cyan/30 group-hover:bg-neon-cyan/20 transition">
+        <svg class="h-4 w-4 text-neon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M9 18V5l12-2v13" />
           <circle cx="6" cy="18" r="3" />
           <circle cx="18" cy="16" r="3" />
         </svg>
       </div>
-      <span class="text-sm font-semibold tracking-tight text-white hidden sm:block">
+      <span class="truncate text-sm font-semibold tracking-tight text-white">
         Creative Audio <span class="text-neon-cyan">Tech</span>
       </span>
     </a>
-    <nav class="flex items-center gap-1 sm:gap-2">
-      <a href="#shift" class="hidden sm:inline-flex min-h-11 items-center px-3 py-2 text-sm text-slate-400 hover:text-white transition">The Shift</a>
-      <a href="#generation" class="hidden sm:inline-flex min-h-11 items-center px-3 py-2 text-sm text-slate-400 hover:text-white transition">Generation</a>
-      <a href="#production" class="hidden sm:inline-flex min-h-11 items-center px-3 py-2 text-sm text-slate-400 hover:text-white transition">Production</a>
-      <a href="#acquire" class="btn-primary !min-h-11 !px-4 !py-2 text-sm">
-        Acquire Domain
+
+    <nav class="hidden items-center gap-1 text-sm md:flex" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'inline-flex min-h-11 items-center rounded-xl px-3 py-2 transition',
+              isActive(item.href) ? 'bg-white/5 text-white' : 'text-slate-400 hover:text-white',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={inquireHref} class="btn-primary !min-h-11 !px-4 !py-2 ml-1 text-sm">
+        Make an offer
       </a>
     </nav>
+
+    <details data-nav class="relative md:hidden">
+      <summary class="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white [&::-webkit-details-marker]:hidden">
+        <span class="sr-only">Open menu</span>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linecap="round" d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13"></path>
+        </svg>
+      </summary>
+      <nav
+        class="absolute right-0 top-[calc(100%+0.5rem)] w-64 rounded-2xl border border-white/10 bg-surface-800 p-2 shadow-xl"
+        aria-label="Mobile"
+      >
+        <a href="/" class="flex min-h-11 items-center rounded-xl px-3 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white">Home</a>
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class="flex min-h-11 items-center rounded-xl px-3 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          href={inquireHref}
+          class="mt-1 flex min-h-11 items-center justify-center rounded-xl bg-neon-cyan px-3 text-sm font-semibold text-surface-900"
+        >
+          Make an offer
+        </a>
+      </nav>
+    </details>
   </div>
 </header>
+
+<script>
+  const menus = document.querySelectorAll('details[data-nav]');
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    menus.forEach((menu) => {
+      if (menu.hasAttribute('open') && !menu.contains(target)) {
+        menu.removeAttribute('open');
+      }
+    });
+  });
+
+  document.querySelectorAll('details[data-nav] a').forEach((link) => {
+    link.addEventListener('click', () => {
+      link.closest('details')?.removeAttribute('open');
+    });
+  });
+</script>

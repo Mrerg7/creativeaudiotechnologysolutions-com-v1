@@ -1,16 +1,27 @@
 # creativeaudiotechnologysolutions.com
 
-Premium domain demonstration site focused on the AI transformation of audio creation, production, and listening.
+Premium domain demonstration site for **creativeaudiotechnologysolutions.com** — built to convert serious acquisition inquiries while publishing clear, crawlable category content for SEO.
 
-**Domain available for acquisition** → `sales@desertrich.com`
+**Domain for sale** → `sales@desertrich.com`
+
+Live: [https://creativeaudiotechnologysolutions.com/](https://creativeaudiotechnologysolutions.com/)
+
+## What ships
+
+- Conversion-first homepage + dedicated `/acquire/` inquiry flow
+- FAQ with FAQPage schema
+- Insights articles for topical coverage (AI audio category)
+- Product/Offer + Organization JSON-LD, Open Graph, Twitter cards
+- Mobile sticky CTA, 44px+ tap targets, safe-area padding
+- Canonical host worker (www / http / workers.dev → apex HTTPS)
+- Sitemap, robots.txt, llms.txt, web manifest
 
 ## Stack
 
-- **Astro 5** (static output)
-- **Tailwind CSS 3**
-- **TypeScript**
-- **Content Collections** (scaffold ready)
-- **Cloudflare Workers Static Assets** (no adapter — pure static)
+- Astro 5 (static)
+- Tailwind CSS 3
+- TypeScript
+- Cloudflare Workers Static Assets
 
 ## Development
 
@@ -19,34 +30,18 @@ npm install
 npm run dev
 ```
 
-## Build & Deploy
+App: [http://127.0.0.1:4327](http://127.0.0.1:4327)
+
+## Build & deploy
 
 ```bash
 npm run build
-# Output: ./dist
-
-# Deploy to Cloudflare Workers Static Assets
 npx wrangler deploy
+# or
+npm run deploy
 ```
 
-`wrangler.toml` is pre-configured for assets-only deployment:
-
-```toml
-[assets]
-directory = "./dist"
-```
-
-No `@astrojs/cloudflare` adapter is required or used.
-
-## Features
-
-- Fully static, edge-cached on Cloudflare’s global network
-- Structured data (JSON-LD)
-- Complete Open Graph + Twitter Card meta
-- Sitemap + robots.txt
-- Mobile-first responsive design
-- Single conversion-focused CTA → sales@desertrich.com
-- Sophisticated footer domain-acquisition strip + legal disclaimer
+Git push to `main` also triggers Cloudflare Workers Builds for this Worker.
 
 ## License
 

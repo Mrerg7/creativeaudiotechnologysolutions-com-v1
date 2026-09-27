@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { allFaqs } from '../data/faq';
+import { breadcrumbLd, faqLd } from '../data/seo';
+import { site } from '../data/site';
+
+const title = `${site.domain} FAQ | Domain for Sale`;
+const description = `Buyer answers for ${site.domain}: price, what transfers, escrow, brokers, and why this site is not an operating audio company.`;
+const canonical = `${site.url}/faq/`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  canonical={canonical}
+  modified={site.updated}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', url: `${site.url}/` },
+      { name: 'FAQ', url: canonical },
+    ]),
+    faqLd(allFaqs),
+  ]}
+>
+  <Header />
+  <main id="main">
+    <section class="border-b border-white/5 pt-28 pb-12 sm:pt-32 sm:pb-16">
+      <div class="container-narrow max-w-3xl">
+        <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'FAQ' }]} />
+        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-neon-cyan">Questions</p>
+        <h1 class="mt-3 heading-section">FAQ</h1>
+        <p class="mt-5 text-lg leading-relaxed text-slate-300">
+          Price, transfer, escrow, and the limit of what this website is. If your question is an offer, use the
+          <a href="/acquire/#inquire" class="font-medium text-neon-cyan underline decoration-neon-cyan/30 underline-offset-4">inquiry form</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="container-narrow max-w-3xl py-10 sm:py-14">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Buying the domain</h2>
+      <div class="mt-4 divide-y divide-white/10 rounded-2xl border border-white/10 bg-surface-800/40">
+        {
+          allFaqs.map((item, index) => (
+            <details class="group px-5" open={index === 0}>
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-left text-base font-semibold text-white [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <span class="text-xl leading-none text-slate-500 group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="pb-5 text-base leading-relaxed text-slate-400">{item.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="mt-8 text-sm leading-relaxed text-slate-500">
+        Related:
+        <a class="font-medium text-neon-cyan underline decoration-neon-cyan/30 underline-offset-4" href="/insights/what-is-ai-audio-technology/">what AI audio technology is</a>,
+        <a class="font-medium text-neon-cyan underline decoration-neon-cyan/30 underline-offset-4" href="/acquire/">acquisition terms</a>.
+      </p>
+    </section>
+  </main>
+  <Footer />
+</Layout>

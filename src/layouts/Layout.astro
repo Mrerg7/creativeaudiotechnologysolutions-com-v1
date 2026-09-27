@@ -1,68 +1,107 @@
 ---
-import '../styles/global.css';
+import { site } from '../data/site';
+import MobileBar from '../components/MobileBar.astro';
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   canonical?: string;
   noindex?: boolean;
+  ogType?: 'website' | 'article';
+  published?: string;
+  modified?: string;
+  jsonLd?: Record<string, unknown>[];
 }
 
 const {
-  title = 'Creative Audio Technology Solutions | AI-Powered Audio Creation',
-  description = 'Explore how AI has unified audio creation, production, and distribution. From ByteDance Seed Audio to real-time AI mixing agents — the future of professional-grade sound is software-driven. Domain available for acquisition.',
-  ogImage = 'https://creativeaudiotechnologysolutions.com/og-image.jpg',
-  canonical = 'https://creativeaudiotechnologysolutions.com/',
+  title = `${site.domain} for Sale | AI Audio Technology Domain`,
+  description = site.description,
+  ogImage = site.ogImage,
+  ogImageAlt = site.ogImageAlt,
+  canonical = `${site.url}/`,
   noindex = false,
+  ogType = 'website',
+  published,
+  modified = site.updated,
+  jsonLd = [],
 } = Astro.props;
 
 const robots = noindex
   ? 'noindex, follow'
   : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
-const structuredData = {
+const pageId = `${canonical.replace(/\/$/, '') || site.url}#webpage`;
+
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'Organization',
+    '@id': `${site.url}/#organization`,
+    name: site.name,
+    url: `${site.url}/`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${site.url}/icon-512.png`,
+      width: 512,
+      height: 512,
+    },
+    email: site.email,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: site.email,
+      contactType: 'sales',
+      availableLanguage: ['English'],
+      areaServed: 'Worldwide',
+    },
+  },
+  {
+    '@type': 'Organization',
+    '@id': `${site.url}/#seller`,
+    name: site.seller,
+    email: site.email,
+    url: `${site.url}/`,
+    description: `Seller of ${site.domain}. US-based holder of premium brandable .com domain assets.`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: site.email,
+      contactType: 'sales',
+      availableLanguage: ['English'],
+      areaServed: 'Worldwide',
+    },
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    url: `${site.url}/`,
+    name: site.name,
+    description: site.description,
+    publisher: { '@id': `${site.url}/#organization` },
+    inLanguage: 'en-US',
+  },
+  {
+    '@type': 'WebPage',
+    '@id': pageId,
+    url: canonical,
+    name: title,
+    isPartOf: { '@id': `${site.url}/#website` },
+    about: { '@id': `${site.url}/#organization` },
+    description,
+    inLanguage: 'en-US',
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: ogImage,
+    },
+    ...(published ? { datePublished: published } : { datePublished: site.published }),
+    ...(modified ? { dateModified: modified } : {}),
+  },
+  ...jsonLd,
+];
+
+const json = JSON.stringify({
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': 'https://creativeaudiotechnologysolutions.com/#website',
-      url: 'https://creativeaudiotechnologysolutions.com/',
-      name: 'Creative Audio Technology Solutions',
-      description,
-      publisher: {
-        '@id': 'https://creativeaudiotechnologysolutions.com/#organization',
-      },
-      inLanguage: 'en-US',
-    },
-    {
-      '@type': 'Organization',
-      '@id': 'https://creativeaudiotechnologysolutions.com/#organization',
-      name: 'Creative Audio Technology Solutions',
-      url: 'https://creativeaudiotechnologysolutions.com/',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://creativeaudiotechnologysolutions.com/favicon.svg',
-      },
-      sameAs: [],
-    },
-    {
-      '@type': 'WebPage',
-      '@id': 'https://creativeaudiotechnologysolutions.com/#webpage',
-      url: 'https://creativeaudiotechnologysolutions.com/',
-      name: title,
-      isPartOf: {
-        '@id': 'https://creativeaudiotechnologysolutions.com/#website',
-      },
-      about: {
-        '@type': 'Thing',
-        name: 'AI Audio Technology',
-      },
-      description,
-      inLanguage: 'en-US',
-    },
-  ],
-};
+  '@graph': graph,
+}).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -71,46 +110,68 @@ const structuredData = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta name="color-scheme" content="dark" />
+    <meta name="generator" content={Astro.generator} />
+
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="google-site-verification" content="9HaFc-wUc4BydI4hO3TvUbY5uUJe0HttYaoc4nx9ivs" />
     <meta name="robots" content={robots} />
-    {noindex && <meta name="googlebot" content="noindex, follow" />}
-    <meta name="author" content="Creative Audio Technology Solutions" />
+    <meta name="googlebot" content={robots} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {!noindex && <link rel="alternate" hreflang="en" href={canonical} />}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={canonical} />}
+
+    <meta name="google-site-verification" content={site.verification} />
+    <meta name="author" content={site.seller} />
     <meta name="theme-color" content="#0a0a0f" />
+    <meta name="keywords" content="AI audio, creative audio technology, generative audio, domain for sale, audio technology solutions" />
 
-    {!noindex && (
-      <>
-        <!-- Open Graph -->
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="Creative Audio Technology Solutions" />
-        <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_US" />
+    {ogType === 'article' && published && <meta property="article:published_time" content={published} />}
+    {ogType === 'article' && modified && <meta property="article:modified_time" content={modified} />}
 
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
-        <!-- Structured Data -->
-        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-      </>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/icon-512.png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+
+    {(Astro.url.pathname === '/' || Astro.url.pathname === '') && (
+      <link rel="preload" as="image" href={site.heroImage} fetchpriority="high" />
     )}
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+
+    {!noindex && <script type="application/ld+json" set:html={json} />}
   </head>
-  <body class="min-h-screen bg-surface-900 text-slate-100 overflow-x-hidden">
+  <body class="flex min-h-screen flex-col overflow-x-hidden bg-surface-900 pb-20 text-slate-100 md:pb-0">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[70] focus:rounded-xl focus:bg-neon-cyan focus:px-4 focus:py-2 focus:font-semibold focus:text-surface-900"
+    >
+      Skip to content
+    </a>
     <slot />
+    {!noindex && <MobileBar />}
   </body>
 </html>

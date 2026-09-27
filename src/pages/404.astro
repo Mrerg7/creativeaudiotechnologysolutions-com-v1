@@ -10,14 +10,17 @@ import Footer from '../components/Footer.astro';
   noindex={true}
 >
   <Header />
-  <main class="flex-1 flex items-center justify-center section-padding px-4 min-h-[70svh]">
+  <main id="main" class="flex-1 flex items-center justify-center section-padding px-4 min-h-[70svh] pt-28">
     <div class="text-center max-w-md mx-auto">
       <p class="text-6xl font-bold text-neon-cyan mb-4">404</p>
       <h1 class="text-2xl sm:text-3xl font-semibold text-white mb-4">Page not found</h1>
       <p class="text-slate-400 mb-8 leading-relaxed">
         The page you’re looking for doesn’t exist or has been moved.
       </p>
-      <a href="/" class="btn-primary min-h-12 px-8">Return Home</a>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/" class="btn-primary min-h-12 px-8">Return Home</a>
+        <a href="/acquire/" class="btn-secondary min-h-12 px-8">Acquire Domain</a>
+      </div>
     </div>
   </main>
   <Footer />

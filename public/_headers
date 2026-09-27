@@ -10,9 +10,6 @@
 /index.html
   Link: <https://creativeaudiotechnologysolutions.com/>; rel="canonical"
 
-/index
-  Link: <https://creativeaudiotechnologysolutions.com/>; rel="canonical"
-
 /404
   X-Robots-Tag: noindex, follow
 
@@ -34,5 +31,12 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /robots.txt
+  Cache-Control: public, max-age=86400
+
+/site.webmanifest
+  Content-Type: application/manifest+json
   Cache-Control: public, max-age=86400

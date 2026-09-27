@@ -2,7 +2,7 @@
 name = "creativeaudiotechnologysolutions-com-v1"
 main = "src/worker.ts"
 compatibility_date = "2026-08-01"
-workers_dev = true
+workers_dev = false
 
 [[routes]]
 pattern = "creativeaudiotechnologysolutions.com"
@@ -17,7 +17,7 @@ directory = "./dist"
 binding = "ASSETS"
 # Required so host redirects and path rewrites run before HTML handling
 run_worker_first = true
-# Disable 307 trailing-slash / .html redirects (GSC "Page with redirect")
-html_handling = "none"
+# Prefer trailing-slash URLs to match Astro trailingSlash: 'always'
+html_handling = "force-trailing-slash"
 # Serve dist/404.html with a real 404 status for unknown paths
 not_found_handling = "404-page"

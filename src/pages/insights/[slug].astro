@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getInsight, insights } from '../../data/insights';
+import { articleLd, breadcrumbLd } from '../../data/seo';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return insights.map((item) => ({ params: { slug: item.slug } }));
+}
+
+const { slug } = Astro.params;
+const insight = getInsight(slug!);
+if (!insight) {
+  throw new Error(`Unknown insight slug: ${slug}`);
+}
+
+const title = `${insight.title} | ${site.name}`;
+const canonical = `${site.url}/insights/${insight.slug}/`;
+---
+
+<Layout
+  title={title}
+  description={insight.description}
+  canonical={canonical}
+  ogType="article"
+  published={insight.published}
+  modified={insight.modified}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', url: `${site.url}/` },
+      { name: 'Insights', url: `${site.url}/insights/` },
+      { name: insight.title, url: canonical },
+    ]),
+    articleLd({
+      headline: insight.title,
+      description: insight.description,
+      url: canonical,
+      datePublished: insight.published,
+      dateModified: insight.modified,
+    }),
+  ]}
+>
+  <Header />
+  <main id="main">
+    <article>
+      <header class="border-b border-white/5 pt-28 pb-12 sm:pt-32 sm:pb-16">
+        <div class="container-narrow max-w-3xl">
+          <Breadcrumbs
+            items={[
+              { href: '/', label: 'Home' },
+              { href: '/insights/', label: 'Insights' },
+              { label: insight.title },
+            ]}
+          />
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-neon-cyan">Insight</p>
+          <h1 class="mt-3 heading-section">{insight.title}</h1>
+          <p class="mt-5 text-lg leading-relaxed text-slate-300">{insight.description}</p>
+          <p class="mt-4 text-sm text-slate-500">
+            Updated <time datetime={insight.modified}>{insight.modified}</time>
+            · {insight.readingMinutes} min read · Educational, not a service offer
+          </p>
+        </div>
+      </header>
+
+      <div class="container-narrow max-w-3xl py-12 sm:py-16 space-y-10">
+        {
+          insight.sections.map((section) => (
+            <section>
+              <h2 class="text-2xl font-bold text-white">{section.heading}</h2>
+              {section.paragraphs.map((p) => (
+                <p class="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">{p}</p>
+              ))}
+              {section.bullets && (
+                <ul class="mt-4 list-disc space-y-2 pl-5 text-slate-300">
+                  {section.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))
+        }
+
+        <aside class="rounded-2xl border border-neon-cyan/20 bg-neon-cyan/5 p-6">
+          <p class="text-sm font-semibold uppercase tracking-wider text-neon-cyan">Domain for sale</p>
+          <p class="mt-3 text-slate-300 leading-relaxed">
+            {site.domain} is available for acquisition. Review terms on the
+            <a href="/acquire/" class="text-neon-cyan underline underline-offset-4">acquire page</a>
+            or email <a href={`mailto:${site.email}`} class="text-neon-cyan underline underline-offset-4">{site.email}</a>.
+          </p>
+        </aside>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>

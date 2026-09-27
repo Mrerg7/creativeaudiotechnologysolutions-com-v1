@@ -1,12 +1,14 @@
 {
   "name": "creativeaudiotechnologysolutions-com-v1",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --port 4327 --host 127.0.0.1",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "astro preview --port 4327 --host 127.0.0.1",
+    "astro": "astro",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "astro": "^5.7.0"
@@ -14,8 +16,9 @@
   "devDependencies": {
     "@astrojs/sitemap": "^3.3.0",
     "@astrojs/tailwind": "^6.0.0",
+    "@types/node": "^22.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.0",
-    "@types/node": "^22.0.0"
+    "wrangler": "^4.142.0"
   }
 }

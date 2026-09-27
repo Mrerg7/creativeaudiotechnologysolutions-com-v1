@@ -8,16 +8,89 @@ import SectionProduction from '../components/SectionProduction.astro';
 import SectionListening from '../components/SectionListening.astro';
 import CTA from '../components/CTA.astro';
 import Footer from '../components/Footer.astro';
+import { buyerFaqs } from '../data/faq';
+import { insights } from '../data/insights';
+import { breadcrumbLd, faqLd, productLd } from '../data/seo';
+import { site } from '../data/site';
+
+const title = `${site.domain} for Sale | Creative Audio Technology Solutions`;
+const description = site.description;
+const canonical = `${site.url}/`;
+const previewFaqs = buyerFaqs.slice(0, 4);
 ---
 
-<Layout>
+<Layout
+  title={title}
+  description={description}
+  canonical={canonical}
+  published={site.published}
+  modified={site.updated}
+  jsonLd={[
+    breadcrumbLd([{ name: 'Home', url: canonical }]),
+    productLd(),
+    faqLd(previewFaqs),
+  ]}
+>
   <Header />
-  <main>
+  <main id="main">
     <Hero />
     <SectionShift />
     <SectionGeneration />
     <SectionProduction />
     <SectionListening />
+
+    <section id="insights" class="section-padding border-t border-white/5">
+      <div class="container-narrow">
+        <div class="max-w-3xl mb-10">
+          <p class="text-sm font-semibold uppercase tracking-wider text-neon-cyan mb-3">Insights</p>
+          <h2 class="heading-section mb-4">Category reading for buyers and builders</h2>
+          <p class="text-slate-300 leading-relaxed">
+            Short primers on AI audio technology — written to clarify the market around this domain, not to sell a product.
+          </p>
+        </div>
+        <div class="grid gap-5 md:grid-cols-3">
+          {
+            insights.map((item) => (
+              <a
+                href={`/insights/${item.slug}/`}
+                class="group block rounded-2xl border border-white/10 bg-surface-800/50 p-6 transition hover:border-neon-cyan/40 hover:bg-surface-800"
+              >
+                <p class="text-xs uppercase tracking-wider text-slate-500">{item.readingMinutes} min read</p>
+                <h3 class="mt-3 text-lg font-semibold text-white group-hover:text-neon-cyan transition">{item.title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-slate-400">{item.description}</p>
+              </a>
+            ))
+          }
+        </div>
+        <p class="mt-8">
+          <a href="/insights/" class="text-sm font-semibold text-neon-cyan hover:underline">All insights →</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="faq-preview" class="section-padding bg-surface-800/40">
+      <div class="container-narrow max-w-3xl">
+        <p class="text-sm font-semibold uppercase tracking-wider text-neon-cyan mb-3">FAQ</p>
+        <h2 class="heading-section mb-8">Buyer questions, answered plainly</h2>
+        <div class="divide-y divide-white/10 rounded-2xl border border-white/10 bg-surface-900/40">
+          {
+            previewFaqs.map((item, index) => (
+              <details class="group px-5" open={index === 0}>
+                <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-left text-base font-semibold text-white [&::-webkit-details-marker]:hidden">
+                  {item.question}
+                  <span class="text-xl leading-none text-slate-500 group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <p class="pb-5 text-base leading-relaxed text-slate-400">{item.answer}</p>
+              </details>
+            ))
+          }
+        </div>
+        <p class="mt-6 text-sm text-slate-500">
+          More on price, transfer, and brokers in the <a href="/faq/" class="text-neon-cyan hover:underline">full FAQ</a>.
+        </p>
+      </div>
+    </section>
+
     <CTA />
   </main>
   <Footer />

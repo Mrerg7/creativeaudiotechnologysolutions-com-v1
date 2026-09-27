@@ -41,43 +41,47 @@ function withHeaders(response: Response, extra: Record<string, string>, status?:
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-    const needsHttps = url.protocol === 'http:';
-    const needsHostRedirect = isAlternateHost(url.hostname);
+    try {
+      const url = new URL(request.url);
+      const needsHttps = url.protocol === 'http:';
+      const needsHostRedirect = isAlternateHost(url.hostname);
 
-    if (needsHttps || needsHostRedirect) {
-      const canonical = new URL(
-        url.pathname + url.search,
-        CANONICAL_ORIGIN,
-      );
-      return Response.redirect(canonical.toString(), 301);
-    }
+      if (needsHttps || needsHostRedirect) {
+        const canonical = new URL(url.pathname + url.search, CANONICAL_ORIGIN);
+        return Response.redirect(canonical.toString(), 301);
+      }
 
-    const path = url.pathname;
+      const path = url.pathname;
 
-    // Homepage aliases: 200 + canonical to / (no 301/307)
-    if (path === '/' || path === '/index' || path === '/index.html') {
-      const response = await env.ASSETS.fetch(assetRequest(request, '/index.html'));
-      return withHeaders(response, {
-        Link: `<${CANONICAL_ORIGIN}/>; rel="canonical"`,
+      // Homepage aliases: 200 + canonical to /
+      if (path === '/' || path === '/index' || path === '/index.html') {
+        const response = await env.ASSETS.fetch(assetRequest(request, '/index.html'));
+        return withHeaders(response, {
+          Link: `<${CANONICAL_ORIGIN}/>; rel="canonical"`,
+        });
+      }
+
+      // Common sitemap URL: serve the generated index without a 301
+      if (path === '/sitemap.xml') {
+        return env.ASSETS.fetch(assetRequest(request, '/sitemap-index.xml'));
+      }
+
+      // 404 document URLs: real 404 status, never a trailing-slash 307
+      if (path === '/404' || path === '/404/' || path === '/404.html') {
+        const response = await env.ASSETS.fetch(assetRequest(request, '/404.html'));
+        return withHeaders(response, { 'X-Robots-Tag': 'noindex, follow' }, 404);
+      }
+
+      return env.ASSETS.fetch(request);
+    } catch {
+      return new Response('Service temporarily unavailable', {
+        status: 503,
+        headers: {
+          'content-type': 'text/plain; charset=utf-8',
+          'retry-after': '60',
+          'x-robots-tag': 'noindex',
+        },
       });
     }
-
-    // Common sitemap URL: serve the generated index without a 301
-    if (path === '/sitemap.xml') {
-      return env.ASSETS.fetch(assetRequest(request, '/sitemap-index.xml'));
-    }
-
-    // 404 document URLs: real 404 status, never a trailing-slash 307
-    if (path === '/404' || path === '/404/' || path === '/404.html') {
-      const response = await env.ASSETS.fetch(assetRequest(request, '/404.html'));
-      return withHeaders(
-        response,
-        { 'X-Robots-Tag': 'noindex, follow' },
-        404,
-      );
-    }
-
-    return env.ASSETS.fetch(request);
   },
 };
