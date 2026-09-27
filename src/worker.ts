@@ -2,7 +2,7 @@
  * Canonical host + HTTPS enforcement, plus path aliases served without redirects.
  *
  * Host variants (www / http / *.workers.dev) 301 to the apex HTTPS URL.
- * Pretty paths are rewritten to */index.html with 200 so GSC does not see
+ * Pretty paths are rewritten to each route's index.html with 200 so GSC does not see
  * "Page with redirect" from assets html_handling.
  *
  * Requires assets.html_handling = "none".
