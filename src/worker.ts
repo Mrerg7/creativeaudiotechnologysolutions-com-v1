@@ -2,8 +2,10 @@
  * Canonical host + HTTPS enforcement, plus path aliases served without redirects.
  *
  * Host variants (www / http / *.workers.dev) 301 to the apex HTTPS URL.
- * Path aliases (/index.html, /sitemap.xml, /404.html) are internally rewritten
- * so Google Search Console does not exclude them as "Page with redirect".
+ * Pretty paths are rewritten to */index.html with 200 so GSC does not see
+ * "Page with redirect" from assets html_handling.
+ *
+ * Requires assets.html_handling = "none".
  */
 const CANONICAL_HOST = 'creativeaudiotechnologysolutions.com';
 const CANONICAL_ORIGIN = `https://${CANONICAL_HOST}`;
@@ -39,6 +41,20 @@ function withHeaders(response: Response, extra: Record<string, string>, status?:
   });
 }
 
+function canonicalizePath(path: string): string | null {
+  if (path === '/' || path === '/index' || path === '/index.html') {
+    return '/index.html';
+  }
+
+  // /acquire → /acquire/index.html ; /acquire/ → /acquire/index.html
+  if (!path.includes('.') && path !== '/') {
+    const base = path.endsWith('/') ? path : `${path}/`;
+    return `${base}index.html`;
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
@@ -53,23 +69,30 @@ export default {
 
       const path = url.pathname;
 
-      // Homepage aliases: 200 + canonical to /
-      if (path === '/' || path === '/index' || path === '/index.html') {
-        const response = await env.ASSETS.fetch(assetRequest(request, '/index.html'));
-        return withHeaders(response, {
-          Link: `<${CANONICAL_ORIGIN}/>; rel="canonical"`,
-        });
-      }
-
-      // Common sitemap URL: serve the generated index without a 301
       if (path === '/sitemap.xml') {
         return env.ASSETS.fetch(assetRequest(request, '/sitemap-index.xml'));
       }
 
-      // 404 document URLs: real 404 status, never a trailing-slash 307
       if (path === '/404' || path === '/404/' || path === '/404.html') {
         const response = await env.ASSETS.fetch(assetRequest(request, '/404.html'));
         return withHeaders(response, { 'X-Robots-Tag': 'noindex, follow' }, 404);
+      }
+
+      const assetPath = canonicalizePath(path);
+      if (assetPath) {
+        const response = await env.ASSETS.fetch(assetRequest(request, assetPath));
+        if (response.ok) {
+          const canonicalPath =
+            path === '/' || path === '/index' || path === '/index.html'
+              ? '/'
+              : path.endsWith('/')
+                ? path
+                : `${path}/`;
+          return withHeaders(response, {
+            Link: `<${CANONICAL_ORIGIN}${canonicalPath === '/' ? '/' : canonicalPath}>; rel="canonical"`,
+          });
+        }
+        // Fall through to ASSETS/not_found_handling for unknown pretty paths
       }
 
       return env.ASSETS.fetch(request);

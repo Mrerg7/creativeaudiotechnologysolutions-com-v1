@@ -17,7 +17,8 @@ directory = "./dist"
 binding = "ASSETS"
 # Required so host redirects and path rewrites run before HTML handling
 run_worker_first = true
-# Prefer trailing-slash URLs to match Astro trailingSlash: 'always'
-html_handling = "force-trailing-slash"
+# Must be "none" so Worker can serve /index.html as 200 (force-trailing-slash
+# 307s /index.html → / and loops with the homepage rewrite).
+html_handling = "none"
 # Serve dist/404.html with a real 404 status for unknown paths
 not_found_handling = "404-page"
