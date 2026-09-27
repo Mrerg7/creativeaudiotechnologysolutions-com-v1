@@ -3,11 +3,11 @@ import { site } from '../data/site';
 ---
 
 <section class="relative overflow-hidden min-h-[min(100svh,880px)] flex items-center pt-28 pb-20 sm:pt-36 sm:pb-28">
-  <div class="absolute inset-0">
+  <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
     <img
       src={site.heroImage}
-      alt={`${site.name} — premium AI audio technology domain`}
-      class="absolute inset-0 h-full w-full object-cover"
+      alt=""
+      class="absolute inset-0 h-full w-full max-w-none object-cover"
       width="1024"
       height="558"
       loading="eager"
@@ -16,7 +16,6 @@ import { site } from '../data/site';
     />
     <div
       class="absolute inset-0 bg-gradient-to-b from-surface-900/80 via-surface-900/70 to-surface-900"
-      aria-hidden="true"
     ></div>
   </div>
   <div class="absolute inset-0 bg-grid-pattern bg-[size:40px_40px] opacity-30 pointer-events-none" aria-hidden="true"></div>

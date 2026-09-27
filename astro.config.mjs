@@ -40,7 +40,7 @@ export default defineConfig({
   output: 'static',
   build: {
     assets: 'assets',
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'never',
   },
   vite: {
     build: {
